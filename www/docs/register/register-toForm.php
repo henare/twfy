@@ -1,4 +1,4 @@
-<form method="post" action="?register=<?php echo $_GET['register'] ?>">
+<form method="post" action="?who=<?php echo $_GET['who'] ?>">
 
 <h1>House of representatives Statement of Registrable Interests</h1>
 
@@ -9,10 +9,15 @@
   	<input type="radio" name="type" <?php if($this->type == "new") echo "checked";?> value="new">At date of election (newly elected members)
 </p>
 
+
 <p>Notes ...</p>
 
 <table>
 	<tr>
+		<td>Signed Date</td>
+		<td><input type="text" name="stamped_date" value="<?php echo $this->stamped_date; ?>"
+			onKeyPress="return noSubmit(event)"></td>
+	</tr><tr>
 		<td>Surname:</td>
 		<td><input type="text" name="surname" value="<?php echo $this->surname ?>"
 			onKeyPress="return noSubmit(event)"></td>
@@ -46,5 +51,21 @@ foreach($questions as $question) {
 	$question->toForm($this->questions);
 }
 ?>
-</form>
 
+<table>
+	<tr>
+		<td>Signed:</td>
+		<td>
+			<input type="radio" name="signed" <?php if($this->type == "continue") echo "checked";?> value="yes">Yes<br />
+			<input type="radio" name="signed" <?php if($this->type == "new") echo "checked";?> value="no">No
+		</td>
+	</tr><tr>
+		<td>Signed Date</td>
+		<td><input type="text" name="signed_date" value="<?php echo $this->signed_date; ?>"
+			onKeyPress="return noSubmit(event)"></td>
+	</tr>
+</table>
+
+<input type="submit" name="save" value="save">  
+
+</form>

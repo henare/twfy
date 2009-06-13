@@ -1,11 +1,14 @@
 <?php
 
+require 'Date.php';
+define('DATE_FMT', "%Y/%m/%d");
+
 class Question {
 	var $persons = array("self" => "Self", "spouse" => "Spouse", "children" => "Dependent Children");
 	var $name;
 	var $description;
 	var $fields;
-	
+
 	function Question($name, $description, $fields) {
 		$this->name = $name;
 		$this->description = $description;
@@ -92,15 +95,20 @@ include "questions.php";
 $states = array("NSW", "QLD", "VIC", "WA", "SA", "TAS", "NT", "ACT");
 
 class Register {
+	var $stamped_date;
 	var $type;
 	var $surname;
 	var $othernames;
 	var $divison;
 	var $state;
+	var $signed;
+	var $signed_date;	
 
 	static function from_post($topopulate) {
 		global $states, $questions;
 		$r = new Register();
+
+		$r->stamped_date = $topopulate['stamped_date'];
 
 		if ($topopulate['type'] == "new" or $topopulate['type'] == "continue") 
 			$r->type = $topopulate['type'];
@@ -116,12 +124,20 @@ class Register {
 			$question->cleanup($topopulate['questions']);
 
 		$r->questions = $topopulate['questions'];
+
+		if ($topopulate['signed'] == "yes" or $topopulate['signed'] == "no")
+			$r->signed = $topopulate['signed'];
+
+		$r->signed_date = $topopulate['signed_date'];
+
 		return $r;
 	}
 
 	static function from_xml(&$xml) {
 		global $states, $questions;
 		$r = new Register();
+
+		$r->stamped_date = $xml->stamped_date;
 
 		if ($xml->type == "new" or $xml->type == "continue") 
 			$r->type = (String)$xml->type;
@@ -134,10 +150,13 @@ class Register {
 			$r->state = (String)$xml->state;
 	
 		$r->questions = array();
-		foreach($questions as $question) {
+		foreach($questions as $question)
 			$question->from_xml($xml, $r->questions);
-		}
 
+		if ($xml->signed == "yes" or $xml->signed == "no")
+			$r->signed = $xml->signed;
+
+		$r->signed_date = $xml->signed_date;
 		return $r;
 	}
 
@@ -237,31 +256,29 @@ function noSubmit(event) {
 
 <?php
 	// FIXME: Security bug - should check filename matches a given pattern
-	$register = $_GET['register'].".xml";
-	if (!file_exists($register)) {
-		die("Don't know about that person!");
+	$who = "interests/".$_GET['who']."/register.xml";
+	if (!file_exists($who)) {
+		die("Don't know about that person! $who");
 	}
 
-	if (isset($_POST['save'])) {
-		try {
-			$registerobj = Register::from_post($_POST);
+	try {
+		if (isset($_POST['save'])) {
+			$register = Register::from_post($_POST);
 			
-			$f = fopen($register, "w"); 
-			fwrite($f, $registerobj->toXML());
+			$f = fopen($who, "w"); 
+			fwrite($f, $register->toXML());
 			fclose($f);
-		} catch (Exception $e) {
-			$registerobj = new Register();
+		} else {
+			$xml = @simplexml_load_file($who);
+			if (isset($xml->register))
+				$register = Register::from_xml($xml->register);
+			else
+				$register = new Register();
 		}
-	} else {
-		try {
-			$registerobj = Register::from_xml(simplexml_load_file($register)->register);
-		} catch (Exception $e) {
-			$registerobj = new Register();
-		}
+	} catch (Exception $e) {
+		$register = new Register();
 	}
-	var_dump($registerobj);
-
-	$registerobj->toForm(); ?>
+	$register->toForm(); ?>
 
 </body>
 </html>
