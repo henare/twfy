@@ -262,18 +262,55 @@ function noSubmit(event) {
 
 	try {
 		if (isset($_POST['save'])) {
+			// Process the data from the form.
 			$register = Register::from_post($_POST);
 			
+			// Grab a lock
+			$lock = fopen("interests/lock", 'w+');
+			while (!flock($lock, LOCK_EX))
+				sleep(0.1);
+
+			// Write out the file
 			$f = fopen($who, "w"); 
 			fwrite($f, $register->toXML());
 			fclose($f);
 
-			// FIXME: Should do something if this fails.
+			if ($THEUSER->emailpublic()) {
+				$author = $THEUSER->firstname()." ".$THEUSER->lastname()." <".$THEUSER->email().">";
+			} else {
+				$username = preg_split('/[@]/', $THEUSER->email());
+				$author = $THEUSER->firstname()." ".$THEUSER->lastname()." <".$username[0]."@hidden>";
+			}
+
+			$file = substr($who, strlen("interests/"));
+		
+			// Change the directory
 			chdir("interests");
+	
+			// Do the git commit
 
-			// $USER->email();
+			$safe_file = escapeshellarg($file);
+			$safe_message = escapeshellarg("Update $who");
+			$safe_author = escapeshellarg($author);
 
-			//"git commit $who -m 'Updated $who' --author '$author' "
+			$gitvalue = false;
+			$gitoutput = array();
+			$handle = exec("git commit $file -m $safe_message --author $safe_author", &$gitoutput, &$gitvalue);
+
+			switch($gitvalue) {
+			case 0:
+				echo "<div>Changes saved.</div>\n";
+				break;
+
+			case 1:
+				echo "<div>No changes made.</div>\n";
+				break;
+			default:
+				;
+			}
+
+			// Release the lock
+			fclose($lock);
 
 		} else {
 			$xml = @simplexml_load_file($who);
