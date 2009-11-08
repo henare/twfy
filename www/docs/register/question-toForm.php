@@ -17,7 +17,7 @@
 				</tr><tr>
 
 <?php
-	$question_responses = $responses[$this->name][$person];
+	$question_responses = @$responses[$this->name][$person];
 	for($i = 0; $i <= count($question_responses); $i++) { 
 		$row = @$question_responses[$i];
 ?>
@@ -30,7 +30,7 @@
 <?php 				} else { ?>
 						onKeyPress="return noSubmit(event)"
 <?php				} ?>
-						value="<?php echo htmlentities($row[$field_name]); ?>">
+						value="<?php echo htmlentities(@$row[$field_name]); ?>">
 					</td>
 <?php			} ?>
 <?php 		} ?>
