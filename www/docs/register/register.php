@@ -109,7 +109,7 @@ class Register {
 
 		$r->stamped_date = $topopulate['stamped_date'];
 
-		if ($topopulate['type'] == "new" or $topopulate['type'] == "continue") 
+		if (@$topopulate['type'] == "new" or @$topopulate['type'] == "continue") 
 			$r->type = $topopulate['type'];
 
 		$r->surname = $topopulate['surname'];
@@ -124,7 +124,7 @@ class Register {
 
 		$r->questions = $topopulate['questions'];
 
-		if ($topopulate['signed'] == "yes" or $topopulate['signed'] == "no")
+		if (@$topopulate['signed'] == "yes" or @$topopulate['signed'] == "no")
 			$r->signed = $topopulate['signed'];
 
 		$r->signed_date = $topopulate['signed_date'];

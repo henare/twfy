@@ -49,7 +49,7 @@
 
 <?php
 foreach($questions as $question) {
-	$question->toForm($this->questions);
+	$question->toForm(@$this->questions);
 }
 ?>
 
