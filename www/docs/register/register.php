@@ -1,7 +1,6 @@
 <?php
 
-require 'Date.php';
-define('DATE_FMT', "%Y/%m/%d");
+include_once 'common.php';
 
 class Question {
 	var $persons = array("self" => "Self", "spouse" => "Spouse", "children" => "Dependent Children");
