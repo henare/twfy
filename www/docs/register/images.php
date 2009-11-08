@@ -15,7 +15,7 @@ sort($images);
 
 foreach($images as $image) {
 ?>
-<img src="interests/<?php echo $_GET['who']."/".$image ?>" /><br />
+<img width="100%" src="interests/<?php echo $_GET['who']."/".$image ?>" /><br />
 <?php } ?>
 </body>
 <html>
