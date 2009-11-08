@@ -1,6 +1,7 @@
 <form method="post" action="?who=<?php echo $_GET['who'] ?>">
 
-<h1>House of representatives Statement of Registrable Interests</h1>
+<h1>Register of Members' Interests</h1>
+<h2>Statement of Registrable Interests</h2>
 
 <input type="submit" name="save" value="save">  
 
@@ -26,8 +27,8 @@
 		<td><input type="text" name="othernames" value="<?php echo $this->othernames ?>"
 			onKeyPress="return noSubmit(event)"></td>
 	</tr><tr>
-		<td>Electoral division:</td>
-		<td><input type="text" name="division" value="<?php echo $this->division ?>"
+		<td>Electoral divison:</td>
+		<td><input type="text" name="divison" value="<?php echo $this->divison ?>"
 			onKeyPress="return noSubmit(event)"></td>
 	</tr><tr>
 		<td>State:</td>

@@ -267,6 +267,14 @@ function noSubmit(event) {
 			$f = fopen($who, "w"); 
 			fwrite($f, $register->toXML());
 			fclose($f);
+
+			// FIXME: Should do something if this fails.
+			chdir("interests");
+
+			// $USER->email();
+
+			//"git commit $who -m 'Updated $who' --author '$author' "
+
 		} else {
 			$xml = @simplexml_load_file($who);
 			if (isset($xml->register))
