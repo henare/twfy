@@ -28,18 +28,20 @@ if (!isset($data['info'])) {
 	exit;
 }
 
-$PAGE->page_start();
+$PAGE->page_start_mobile();
 
 $PAGE->stripe_start('head-1');
 
 $sidebar = $hansardmajors[$data['info']['major']]['sidebar_short'];
 
+/*
 $PAGE->stripe_end(array(
 	array (
 		'type' =>'include',
 		'content' => $sidebar
 	)
 ));
+*/
 
 if ($data['info']['date'] == date('Y-m-d')) { ?>
 <div style="padding: 4px; margin: 1em; color: #000000; background-color: #ffeeee; border: solid 2px #ff0000;">
@@ -113,12 +115,8 @@ if (isset ($data['rows'])) {
 		if (!$titles_displayed && $row['htype'] != '10' && $row['htype'] != '11') {
 			// Output the titles we've got so far.
 			
-			$PAGE->stripe_start('head-2');
+			//$PAGE->stripe_start('head-2');
 			?>
-                        <!-- ADDTHIS JAVASCRIPT BEGIN -->
-                       <?php if (defined('ADDTHIS_USERNAME') && ADDTHIS_USERNAME) print '<script type="text/javascript">var addthis_pub = "' . ADDTHIS_USERNAME .'";</script>' ?>
-			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js"></script>
-                        <!-- ADDTHIS JAVASCRIPT END -->
 				<h4><?php echo $section_title; ?></h4>
 				<h5><?php echo $subsection_title; ?></h5>
 <?php
@@ -126,11 +124,13 @@ if (isset ($data['rows'])) {
 #			if ($body) {
 #				print '<div class="blockbody">' . $body . '</div>';
 #			}
+            /*
 			$PAGE->stripe_end(array(
 				array (
 					'type' => 'nextprev'
 				)
 			));
+            */
 
 			$titles_displayed = true;
 		}
@@ -147,7 +147,7 @@ if (isset ($data['rows'])) {
 			$stripecount++;
 			$style = $stripecount % 2 == 0 ? '1' : '2';	
 			
-			$PAGE->stripe_start('procedural-'.$style);
+			//$PAGE->stripe_start('procedural-'.$style);
 			
 			echo $row['body'];
 			
@@ -155,12 +155,14 @@ if (isset ($data['rows'])) {
 			
 			$sidebarhtml = generate_commentteaser(&$row, $data['info']['major']);
 			
+            /*
 			$PAGE->stripe_end(array(
 				array (
 					'type' => 'html',
 					'content' => $sidebarhtml
 				)
 			));
+            */
 
 	
 
@@ -185,11 +187,11 @@ if (isset ($data['rows'])) {
 			// If this item is at a new time, then print the time.
 			if (substr($row['htime'],0,5) != $timetracker && $row['htime'] != "00:00:00") {
 				
-				$PAGE->stripe_start('time-'.$style);
+				//$PAGE->stripe_start('time-'.$style);
 				
 				echo "\t\t\t\t<p>" . format_time($row['htime'], TIMEFORMAT) . "</p>\n";
 				
-				$PAGE->stripe_end();
+				//$PAGE->stripe_end();
 
 				// Set the timetracker to the current time
 				$timetracker = substr($row['htime'],0,5);
@@ -206,7 +208,7 @@ if (isset ($data['rows'])) {
 			// gid_to_anchor() is in utility.php
 			$id = 'g' . gid_to_anchor($row['gid']);
 			
-			$PAGE->stripe_start($style, $id);	
+			//$PAGE->stripe_start($style, $id);	
 	
 			?>
 				<a name="<?php echo $id; ?>"></a>
@@ -228,7 +230,7 @@ if (isset ($data['rows'])) {
 				}
 				echo '<strong>', $speakername, '</strong></a> <small>';
 				$desc = '';
-				if ($speaker['party'] != 'Speaker' && $speaker['party'] != 'Deputy Speaker' && $speaker['party'] != "President" && $speaker['constituency']) {
+				if ($speaker['house'] == 1 && $speaker['party'] != 'Speaker' && $speaker['party'] != 'Deputy Speaker' && $speaker['constituency']) {
 					$desc .= $speaker['constituency'] . ', ';
 				}
 				if (get_http_var('wordcolours')) {
@@ -242,10 +244,11 @@ if (isset ($data['rows'])) {
 					$desc .= ', ' . $speaker['office'][0]['pretty'];
 				}
 				if ($desc) print "($desc)";
-				?> <a href="http://www.addthis.com/bookmark.php" onmouseover="return addthis_open(this, '', '<?php echo 'http://', DOMAIN, $row['commentsurl']; ?>', '');" onmouseout="addthis_close();" onclick="return addthis_sendto();">Share this</a><?php
+                /*
 				if ($hansardmajors[$data['info']['major']]['type']=='debate' && $this_page == $hansardmajors[$data['info']['major']]['page_all']) {
-					?> | <a href="<?php echo $row['commentsurl']; ?>" title="Copy this URL to link directly to this piece of text" class="permalink">Link to this</a><?php
+					?> <a href="<?php echo $row['commentsurl']; ?>" title="Copy this URL to link directly to this piece of text" class="permalink">Link to this</a><?php
 				}
+                */
 				if (isset($row['source_url']) && $row['source_url'] != '') {
 					echo ' | <a href="', $row['source_url'], '" title="The source of this piece of text">',
 					    ($hansardmajors[$data['info']['major']]['location']=='Scotland' ? 'Official Report' : 'Hansard'),
@@ -257,8 +260,7 @@ if (isset ($data['rows'])) {
 					print " | Question $m[1]";
 				}
 
-                #                if ($data['info']['major'] == 1) { # Commons debates only
-                if (0) {
+                                if ($data['info']['major'] == 1) { # Commons debates only
 					?><!-- | <script type="text/javascript" src="http://parlvid.mysociety.org/video.cgi?gid=<?
 					echo $row['gid'];
 				 	?>&output=js-link"></script> --><?
@@ -300,6 +302,7 @@ if (isset ($data['rows'])) {
 			$sidebarhtml .= generate_commentteaser(&$row, $data['info']['major']);
 #			}
 			
+/*
 			$PAGE->stripe_end(array(
 				#array (
 				#	'type' => 'html',
@@ -314,6 +317,7 @@ if (isset ($data['rows'])) {
 					'content' => $extrahtml
 				)
 			));
+*/
 			
 				
 		} // End htype 12.
@@ -329,16 +333,18 @@ if (isset ($data['rows'])) {
 	} // End cycling through rows.
 	
 	if (!$titles_displayed) {
-		$PAGE->stripe_start('head-2');
+		//$PAGE->stripe_start('head-2');
 		?>
 				<h4><?php echo $section_title; ?></h4>
 				<h5><?php echo $subsection_title; ?></h5>
 <?php
+/*
 		$PAGE->stripe_end(array(
 			array (
 				'type' => 'nextprev'
 			)
 		));
+*/
 		$titles_displayed = true;
 	}
 
@@ -380,7 +386,7 @@ if (isset ($data['rows'])) {
 			}
 		}
 		print '</ul>';
-		$PAGE->stripe_end();
+		//$PAGE->stripe_end();
 	}
 }  else {
 	?>
@@ -394,13 +400,15 @@ if (isset ($data['rows'])) {
 if ($this_page == 'debates' || $this_page == 'whall' || $this_page == 'lordsdebates' || $this_page == 'nidebates') {
 	// Previous / Index / Next links, if any.
 	
-	$PAGE->stripe_start('foot');
+	//$PAGE->stripe_start('foot');
 	?>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<?php
+    /*
 	$PAGE->stripe_end(array(
 		array (
 			'type' => 'nextprev'
 		)
 	));
+    */
 }
 
 

@@ -157,14 +157,18 @@ class HANSARDLIST {
 			$view = $args['view_override'];
 		}
 		
-		$return = $this->render($view, $data, $format);
+        if (isset($args['mobile'])) {
+		    $return = $this->render($view, $data, $format, $args['mobile']);
+        } else {
+		    $return = $this->render($view, $data, $format);
+        }
 		
 		return $return;
 	}
 	
 	
 	
-	function render ($view, $data, $format='html') {
+	function render ($view, $data, $format='html', $mobile=0) {
 		// Once we have the data that's to be rendered,
 		// include the template.
 
@@ -173,7 +177,15 @@ class HANSARDLIST {
 			return $data;
 		}
 		
-		include (INCLUDESPATH."easyparliament/templates/$format/hansard_$view" . ".php");
+		$standard_template = INCLUDESPATH."easyparliament/templates/$format/hansard_$view" . ".php";
+		$mobile_template = INCLUDESPATH."easyparliament/templates/$format/hansard_".$view."_mobile" . ".php";
+		
+		// Not every possible view here has a mobile version. So, only use the mobile version template if it exists.
+        if ($mobile && file_exists($mobile_template)) {
+		    include ($mobile_template);
+        } else {
+		    include ($standard_template);
+        }
 		return true;
 	
 	}

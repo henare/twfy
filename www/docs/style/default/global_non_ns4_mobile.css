@@ -4,7 +4,7 @@
 /**** GENERIC HTML ELEMENTS *****************************************************/
 
 body {
-	min-width: 950px; /* NAT */
+	/* min-width: 950px; */ /* NAT */
 }
 
 h1 {
@@ -154,7 +154,7 @@ div.row span.formw {
 #content {
 	clear: both;
 	width: 100%;
-	min-width: 950px; /* NAT */
+	/* min-width: 950px; */ /* NAT */
 	}
 
 #footer {
@@ -302,7 +302,7 @@ div.stripe-procedural-2 {
 
 div.main {	
 	float: left;
-	width: 74%; /* NAT */
+	/* width: 74%; */ /* NAT */
 	margin: 0;
 	padding: 0;
 	background: #fff;
@@ -365,7 +365,6 @@ div.stripe-procedural-2 p {
 
 div.main p,
 div.main ul,
-div.main ol,
 div.main dl,
 div.main pre,
 div.main iframe,
@@ -593,7 +592,7 @@ div.calendar caption {
 	text-align: left;
 	padding: 0.3em 0.4em;
 	background: #a8a98c;
-	color: #000;
+	color: #fff;
 	font-weight: bold;
 	width: 189px;
 	}
@@ -663,8 +662,8 @@ ul#hansard-day ul {
 	}
 div#intro ul#hansard-day {
 	list-style-type: disc;
-	margin: 0 0 0 2em;
-	padding: 0;
+	margin: 0;
+	padding: 0 0 0 1em;
 }
 div#intro ul#hansard-day li {
 	list-style-type: disc;
@@ -673,7 +672,7 @@ div#intro ul#hansard-day li {
 }
 div#intro ul#hansard-day ul {
 	padding: 0;
-	margin: 0 0 0.5em 2em;
+	margin: 0 0 0.5em 1em;
 }
 div#intro ul#hansard-day ul li {
 }
@@ -922,7 +921,7 @@ div#intro.block li li {
 div#intro.block li p {
 	font-weight: normal;
 	line-height: 1.8em;
-	padding: 0.2em 0 0 0.5em;
+	padding: 0.2em 0 0 0em;
 	margin-bottom: 0;
 	}
 

@@ -5,9 +5,11 @@ www/docs/debates/debates.rss
 www/docs/senate/senate.rss
 www/docs/sitemap.xml
 www/docs/sitemaps/*
-www/docs/regmem/*.pdf
 www/docs/register/interests
+www/docs/regmem/*.pdf
+www/docs/regmem/scan/*.pdf
 scripts/morningupdate-lockfile
 scripts/run-with-lockfile
 scripts/rssgenerate-lockfile
 scripts/alerts-lastsent
+conf/general
