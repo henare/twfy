@@ -1,4 +1,5 @@
 <?php
+$_SERVER['DEVICE_TYPE'] = "mobile";
 # vim:sw=4:ts=4:et:nowrap
 
 include_once "../../includes/easyparliament/init.php";
@@ -63,12 +64,13 @@ if (get_http_var('s') != '' || get_http_var('pid') != '') {
             $pagetitle = 'Who says ' . $data['pagetitle'] . ' the most?';
         }
         $DATA->set_page_metadata($this_page, 'title', $pagetitle);
-        $PAGE->page_start();
+        $PAGE->page_start_mobile();
         $PAGE->stripe_start();
     	$PAGE->search_form();
         if (isset($data['error'])) {
             print '<p>' . $data['error'] . '</p>';
-            $PAGE->page_end();
+            //$PAGE->page_end();
+            $PAGE->page_end_mobile();
             return;
         }
 
@@ -204,7 +206,7 @@ if ($q_house==1) {
 	
     	$DATA->set_page_metadata($this_page, 'title', $pagetitle);
 	    $DATA->set_page_metadata($this_page, 'rss', WEBPATH . 'search/rss/?s=' . urlencode($searchstring));
-    	$PAGE->page_start();
+    	$PAGE->page_start_mobile();
     	$PAGE->stripe_start();
     	$PAGE->search_form();
 	
@@ -229,18 +231,19 @@ if ($q_house==1) {
         if ($args['s']) {
             find_constituency($args);
             #        find_users($args);
-            find_glossary_items($args);
-            find_comments($args);
+        	find_glossary_items($args);
+            #        find_comments($args);
     	}
     }
 } else {
 	// No search term. Display help.
 	$this_page = 'search_help';
-	$PAGE->page_start();
+	$PAGE->page_start_mobile();
 	$PAGE->stripe_start();
 	include INCLUDESPATH . 'easyparliament/staticpages/search_help.php';
 }
 
+/*
 $PAGE->stripe_end(array (
 	array(
 		'type'		=> 'include',
@@ -252,7 +255,8 @@ $PAGE->stripe_end(array (
 	)
 ));
 $PAGE->page_end();
-
+*/
+$PAGE->page_end_mobile();
 function find_comments($args) {
 	global $PAGE, $db;
     $commentlist = new COMMENTLIST;    

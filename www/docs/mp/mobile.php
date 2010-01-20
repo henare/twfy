@@ -1,4 +1,5 @@
 <?php
+$_SERVER['DEVICE_TYPE'] = "mobile";
 
 /* For displaying info about a person for a postcode or constituency.
 
@@ -130,7 +131,7 @@ if (is_numeric(get_http_var('m'))) {
 			$errors['pc'] = "Sorry, ".htmlentities($pc) ." isn't a known postcode";
 			twfy_debug ('MP', "Can't display an MP, as submitted postcode didn't match a constituency");
 		} elseif (is_array($constituency)) {
-			$PAGE->page_start();
+			$PAGE->page_start_mobile();
 			$PAGE->stripe_start();
 			print '<p>There are several electoral divisions within your postcode. Please select from the following:</p><ul>';
 			foreach ($constituency as $c) {
@@ -147,7 +148,7 @@ if (is_numeric(get_http_var('m'))) {
 					</div>'
 			);
 
-			$PAGE->stripe_end(array($sidebar));
+			//$PAGE->stripe_end(array($sidebar));
 		} else {
 			// Redirect to the canonical MP page, with a person id.
 			$MEMBER = new MEMBER(array('constituency' => $constituency));
@@ -192,7 +193,7 @@ if (is_numeric(get_http_var('m'))) {
 } elseif ($name) {
 	$MEMBER = new MEMBER(array('name' => $name));
 	if (((($MEMBER->house_disp==1)
-	    || ($MEMBER->house_disp==2))
+	    || ($MEMBER->house_disp==2 && $this_page!='peer'))
 	    && ($MEMBER->valid || !is_array($MEMBER->person_id()))) || $redirect) {
 		member_redirect($MEMBER);
 	}
@@ -216,7 +217,7 @@ if ($cconstituency == 'your &amp; my society') {
 // DISPLAY A REPRESENTATIVE
 
 if (isset($MEMBER) && is_array($MEMBER->person_id())) {
-	$PAGE->page_start();
+	$PAGE->page_start_mobile();
 	$PAGE->stripe_start();
 	print '<p>That name is not unique. Please select from the following:</p><ul>';
 	$cs = $MEMBER->constituency();
@@ -234,7 +235,7 @@ if (isset($MEMBER) && is_array($MEMBER->person_id())) {
 			</div>'
 	);
 	
-	$PAGE->stripe_end(array($sidebar));
+	//$PAGE->stripe_end(array($sidebar));
 
 } elseif (isset($MEMBER) && $MEMBER->person_id()) {
 	
@@ -272,7 +273,7 @@ if (isset($MEMBER) && is_array($MEMBER->person_id())) {
 		$DATA->set_page_metadata($this_page, 'rss', $feedurl);
 
 	twfy_debug_timestamp("before page_start");
-	$PAGE->page_start();
+	$PAGE->page_start_mobile();
 	twfy_debug_timestamp("after page_start");
 
 	twfy_debug_timestamp("before stripe start");
@@ -402,7 +403,7 @@ body of your articles as the source of any analysis or
 data you get off this site. If you ignore this, we might have to start
 keeping these sorts of records on you...</p></div></div>'
 	);
-	$PAGE->stripe_end($sidebars);
+	//$PAGE->stripe_end($sidebars);
 
 } else {
 	// Something went wrong.
@@ -411,22 +412,23 @@ keeping these sorts of records on you...</p></div></div>'
 	// DISPLAY FORM
 
 	
-	$PAGE->page_start();
+	$PAGE->page_start_mobile();
 	
 	$PAGE->stripe_start();
 
 	if (isset($errors['pc'])) {
-		$PAGE->error_message($errors['pc']);
+		$PAGE->error_message_mobile($errors['pc']);
 	}
 
 	$PAGE->postcode_form();
 	
-	$PAGE->stripe_end();
+	//$PAGE->stripe_end();
 
 }
 
 
-$PAGE->page_end();
+//$PAGE->page_end();
+$PAGE->page_end_mobile();
 
 
 

@@ -88,12 +88,66 @@ class PAGE {
 			
 		}
 	}
+
+
+
+	function page_start_mobile () {
+	  ob_start();
+	  set_time_limit(0);
+		global $DATA, $this_page, $THEUSER;
+		
+		if (!$this->page_started()) {
+			// Just in case something's already started this page...
 	
+			$parent = $DATA->page_metadata($this_page, "parent");
+
+			if ($parent == 'admin' && ! $THEUSER->is_able_to('viewadminsection')) {
+				// If the user tries to access the admin section when they're not
+				// allowed, then show them nothing.
+			
+				if (!$THEUSER->isloggedin()) {
+					$THISPAGE = new URL($this_page);
+					
+					$LOGINURL = new URL('userlogin');
+					$LOGINURL->insert(array('ret' => $THISPAGE->generate('none') ));
+				
+					$text = "<a href=\"" . $LOGINURL->generate() . "\">You'd better log in!</a>";
+				} else {
+					$text = "That's all folks!";
+				}
+				
+				$this_page = 'home';
+				
+				$this->page_header_mobile();
+				$this->page_body_mobile();
+				$this->content_start();
+				$this->stripe_start();
+				
+				print "<p>$text</p>\n";
+				
+				$this->stripe_end();
+				$this->page_end();
+				exit;
+			}
+			
+			$this->page_header_mobile();
+			$this->page_body_mobile();
+			$this->content_start();
+			
+			$this->page_start_done = true;		
+			
+		}
+	}
+
 	
 	function page_end ($extra = null) {
 		$this->content_end();
 		$this->page_footer($extra);
 	}
+
+    function page_end_mobile () {
+        print '<div id="footer"><p><a href="/?show_pc">View the PC OA website</a></p></div>';
+    }
 	
 	
 	function page_started () {
@@ -251,6 +305,139 @@ pageTracker._trackPageview();
 	
 	
 	
+	function page_header_mobile () {
+        // TODO: would be better to set a global switch/env flag to use in page_header(), etc. - oh well this will do for the moment
+		global $DATA, $this_page;
+		
+		$linkshtml = "";
+	
+		$title = '';
+		$sitetitle = $DATA->page_metadata($this_page, "sitetitle");
+		$keywords_title = '';
+		
+		if ($this_page == 'home') {
+			$title = $sitetitle . ': ' . $DATA->page_metadata($this_page, "title");
+		
+		} else {
+
+			if ($page_subtitle = $DATA->page_metadata($this_page, "subtitle")) {
+				$title = $page_subtitle;
+			} elseif ($page_title = $DATA->page_metadata($this_page, "title")) {
+				$title = $page_title;
+			}
+			// We'll put this in the meta keywords tag.
+			$keywords_title = $title;
+
+			$parent_page = $DATA->page_metadata($this_page, 'parent');
+			if ($parent_title = $DATA->page_metadata($parent_page, 'title')) {
+				$title .= ": $parent_title";
+			}
+
+			if ($title == '') {
+				$title = $sitetitle;
+			} else {			
+				$title .= ' (' . $sitetitle . ')';
+			}
+		}
+
+		if (!$metakeywords = $DATA->page_metadata($this_page, "metakeywords")) {
+			$metakeywords = "";
+		}
+		if (!$metadescription = $DATA->page_metadata($this_page, "metadescription")) {
+			$metadescription = "";
+		}
+
+	
+		if ($this_page != "home") {
+			$URL = new URL('home');
+			
+			$linkshtml = "\t<link rel=\"start\" title=\"Home\" href=\"" . $URL->generate() . "\">\n";
+		}
+
+
+		// Create the next/prev/up links for navigation.
+		// Their data is put in the metadata in hansardlist.php
+		$nextprev = $DATA->page_metadata($this_page, "nextprev");
+
+		if ($nextprev) {
+			// Four different kinds of back/forth links we might build.
+			$links = array ("first", "prev", "up", "next", "last");
+
+			foreach ($links as $n => $type) {
+				if (isset($nextprev[$type]) && isset($nextprev[$type]['listurl'])) {
+				
+					if (isset($nextprev[$type]['body'])) {
+						$linktitle = htmlentities( trim_characters($nextprev[$type]['body'], 0, 40) );
+						if (isset($nextprev[$type]['speaker']) &&
+							count($nextprev[$type]['speaker']) > 0) {
+							$linktitle = $nextprev[$type]['speaker']['first_name'] . ' ' . $nextprev[$type]['speaker']['last_name'] . ': ' . $linktitle;	
+						}
+
+					} elseif (isset($nextprev[$type]['hdate'])) {
+						$linktitle = format_date($nextprev[$type]['hdate'], SHORTDATEFORMAT);
+					}
+
+					$linkshtml .= "\t<link rel=\"$type\" title=\"$linktitle\" href=\"" . $nextprev[$type]['listurl'] . "\">\n";
+				}
+			}
+		}
+		
+		// Needs to come before any HTML is output, in case it needs to set a cookie.
+		$SKIN = new SKIN();
+        $SKIN->set_skin("mobile");
+			
+		if (!$keywords = $DATA->page_metadata($this_page, "keywords")) {
+			$keywords = "";	
+		} else {
+			$keywords = ",".$DATA->page_metadata($this_page, "keywords");
+		}
+
+		?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title><?php echo $title; ?></title>
+	<meta name="description" content="Making parliament easy.">
+	<meta name="keywords" content="Parliament, government, House of Representatives, Senate, Senator, MP, Member of Parliament, MPs, Australia, Australian, <?php echo htmlentities($keywords_title).htmlentities($keywords); ?>">
+	<meta name="verify-v1" content="5FBaCDi8kCKdo4s64NEdB5EOJDNc310SwcLLYHmEbgg=">
+    <meta name = "viewport" content = "width=device-width; initial-scale=1.0; maximum-scale=1.0" />
+	<link rel="author" title="Send feedback" href="mailto:<?php echo str_replace('@', '&#64;', CONTACTEMAIL); ?>">
+	<link rel="home" title="Home" href="http://<?php echo DOMAIN; ?>/">
+<?php
+		echo $linkshtml; 
+		
+		$SKIN->output_stylesheets();
+
+		if ($rssurl = $DATA->page_metadata($this_page, 'rss')) {
+			// If this page has an RSS feed set.
+			?>
+	<link rel="alternate" type="application/rss+xml" title="OpenAustralia RSS" href="http://<?php echo DOMAIN . WEBPATH . $rssurl; ?>">
+<?php
+		}
+				
+		if (!DEVSITE) {
+		?>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3107958-3");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+<?		} ?>
+
+</head>
+
+<?php
+	}	
+
+
+
 	function page_body () {
 		global $this_page;
 		
@@ -272,6 +459,28 @@ pageTracker._trackPageview();
 		
 	}
 	
+
+	function page_body_mobile () {
+		global $this_page;
+		
+		// Start the body, put in the page headings.
+		?>
+<body>
+<div id="container">
+<?php
+		twfy_debug ("PAGE", "This page: $this_page");
+		
+		print "\t<a name=\"top\"></a>\n\n";
+		if (defined('OPTION_GAZE_URL') && OPTION_GAZE_URL && (gaze_get_country_from_ip($_SERVER["REMOTE_ADDR"]) == 'NZ' || get_http_var('nz'))) {
+			print '<p align="center"><strong>New!</strong> You\'re in New Zealand, so check out <a href="http://www.theyworkforyou.co.nz">OpenAustralia.co.nz</a></p>';
+		}
+
+		$this->title_bar_mobile();
+		
+		//$this->menu_mobile();
+		
+	}
+
 	
 	
 	function title_bar () {
@@ -324,10 +533,153 @@ pageTracker._trackPageview();
 	</div> <!-- end #banner -->
 <?php	
 	}
+
+
+
+	function title_bar_mobile () {
+		// The title bit of the page, with possible search box.
+		global $this_page;
+		
+		//$img = '<img src="' . IMAGEPATH . 'theyworkforyoucom.gif" width="293" height="28" alt="OpenAustralia.org">';
+
+		$img = '<img src="' . IMAGEPATH . 'openaustraliaorgbeta.gif" width="262" height="32" alt="OpenAustralia.org beta">';
+		
+		//isn't this very hacky? shouldn't we be cobranding cleverly using METADATA? ( I've repeated this below however -stef"
+		if (get_http_var('c4')) {
+			$img = '<img src="/images/c4banner.gif" alt="OpenAustralia.org with Channel 4">';
+		} elseif (get_http_var('c4x')) {
+			$img = '<img src="/images/c4Xbanner.gif" alt="OpenAustralia.org with Channel 4">';
+		}
+
+		if ($this_page != 'home') {
+            $HOMEURL = new URL('home');
+            $HOMEURL = $HOMEURL->generate();
+            $HOMETITLE = 'To the front page of the site';
+			$img = '<a href="' . $HOMEURL . '" title="' . $HOMETITLE . '">' . $img . '</a>';
+		}
+		?>
+	<div id="banner">
+		<div id="title">
+			<h1><?php echo $img; ?></h1>
+		</div>
+	</div> <!-- end #banner -->
+<?php	
+	}
+
 	
 	
 	
 	function menu () {
+		global $this_page, $DATA, $THEUSER;
+	
+		// Page names mapping to those in metadata.php.
+		// Links in the top menu, and the sublinks we see if
+		// we're within that section.
+		$items = array (
+			'home' 		=> array ()/*,
+			'sitenews'  => array(),
+			'hansard' => array(),
+			'comments_recent' => array(),
+			'mps'           => array (),
+			'peers'		=> array (),
+#			'mlas'          => array (),
+#			'msps'          => array (),
+#			'help_us_out'	=> array (), 
+#			'help_us_out'	=> array ('glossary_addterm'),
+			'help'		=> array ()*/
+		);
+		
+		// If the user's postcode is set, then we allow them to view the
+		// bottom menu link to this page...
+		//if ($THEUSER->constituency_is_set()) {
+		//	$items['yourmp'] = array ('yourmp_recent');
+		//}
+		
+	
+		$top_links = array();
+		$bottom_links = array();
+		
+		// We work out which of the items in the top and bottom menus
+		// are highlighted - $top_hilite and $bottom_hilite respectively.
+		
+		$this_parent = $DATA->page_metadata($this_page, 'parent');
+		
+		if ($this_parent == '') {
+			// This page is probably one of the ones in the top men.
+			// So hilite it and no bottom menu hilites.
+			$top_hilite = $this_page;
+			$bottom_hilite = '';
+		
+		} else {
+			// Does this page's parent have a parent?
+			$parents_parent = $DATA->page_metadata($this_parent, 'parent');
+
+			if ($parents_parent == '') {
+				// No grandparent - this page's parent is in the top menu.
+				// We're on one of the pages linked to by the bottom menu.
+				// So hilite it and its parent.
+				$top_hilite = $this_parent;
+				$bottom_hilite = $this_page;
+			} else {
+				// This page is not in either menu. So hilite its parent
+				// (in the bottom menu) and its grandparent (in the top).
+				$top_hilite = $parents_parent;
+				$bottom_hilite = $this_parent;
+			}
+		}
+
+		foreach ($items as $toppage => $bottompages) {
+			
+			// Generate the links for the top menu.
+			
+			// What gets displayed for this page.
+			$menudata = $DATA->page_metadata($toppage, 'menu');
+			$text = $menudata['text'];
+			$title = $menudata['title'];
+			
+			// Where we're linking to.
+			$URL = new URL($toppage);			
+			
+			$class = $toppage == $top_hilite ? ' class="on"' : '';
+
+			$top_links[] = '<a href="' . $URL->generate() . '" title="' . $title . '"' . $class . '>' . $text . '</a>';
+
+			if ($toppage == $top_hilite) {
+				// This top menu link is highlighted, so generate its bottom menu.
+				
+				foreach ($bottompages as $bottompage) {
+					$menudata = $DATA->page_metadata($bottompage, 'menu');
+					$text = $menudata['text'];
+					$title = $menudata['title'];
+					// Where we're linking to.
+					$URL = new URL($bottompage);	
+					$class = $bottompage == $bottom_hilite ? ' class="on"' : '';
+					$bottom_links[] = '<a href="' . $URL->generate() . '" title="' . $title . '"' . $class . '>' . $text . '</a>';
+				}
+			}
+
+		}
+		?>
+	<div id="menu">
+		<div id="topmenu">
+<?php
+			$user_bottom_links = $this->user_bar($top_hilite, $bottom_hilite);
+			if ($user_bottom_links) $bottom_links = $user_bottom_links;
+			?>
+			<br>
+		</div>
+		<div id="bottommenu">
+			<ul>
+			<li><?php print implode("</li>\n\t\t\t<li>", $top_links); ?></li>
+			</ul>
+		</div>
+	</div> <!-- end #menu -->
+	
+<?php
+	}
+
+
+	function menu_mobile () {
 		global $this_page, $DATA, $THEUSER;
 	
 		// Page names mapping to those in metadata.php.
@@ -437,6 +789,8 @@ pageTracker._trackPageview();
 	}
 
 
+
+
 	function user_bar ($top_hilite='', $bottom_hilite='') {
 		// Called from menu(), but separated out here for clarity.
 		// Does just the bit of the menu related to login/join/etc.
@@ -446,8 +800,7 @@ pageTracker._trackPageview();
 
 		// We may want to send the user back to this current page after they've
 		// joined, logged out or logged in. So we put the URL in $returl.
-		$URL = new URL($this_page);
-		$returl = $URL->generate();
+		$returl = $_SERVER['REQUEST_URI'];
 		
 			// The 'get involved' link.
 			$menudata 	= $DATA->page_metadata('getinvolved', 'menu');
@@ -835,6 +1188,7 @@ pageTracker._trackPageview();
 	function content_end () {
 		global $DATA, $this_page;
 		
+		/* Comment out the dynamic links so we can hard code them
 		$pages = array ('about', 'contact', 'linktous', 'houserules');
 		
 		foreach ($pages as $page) {
@@ -847,9 +1201,18 @@ pageTracker._trackPageview();
 				$links[] = '<a href="' . $URL->generate() . '">' . $title . '</a>';
 			}
 		}
-		$links[] = '<a href="' . WEBPATH . 'api/">API</a> / <a href="http://data.openaustralia.org">XML</a>';
+		*/
+		$links[] = '<a href="http://www.openaustralia.org/about/">About us</a>';
+		$links[] = '<a href="http://www.openaustralia.org/help/linktous/">Link to us</a>';
+                $links[] = '<a href="http://www.openaustralia.org/houserules/">House rules</a>';
+		$links[] = '<a href="http://www.openaustralia.org/api/">API</a> / <a href="http://data.openaustralia.org">XML</a>';
 		$links[] = '<a href="http://software.openaustralia.org">Source code</a>';
 		$links[] = '<a href="http://blog.openaustralia.org">Blog</a>';
+
+        $qs = $_SERVER['QUERY_STRING'];
+        if (preg_match('/.*show_pc.*/i', $qs)) {
+            $links[] = '<a href="/?show_mobile">Mobile OA</a>';
+        }
 
 		$user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
 		if (stristr($user_agent, 'Firefox/'))
@@ -1218,7 +1581,9 @@ pr()//-->
 
 		# If they're currently an MLA, a Lord or a non-Sinn Fein MP
 		if ($member['current_member'][0] || $member['current_member'][2] || $member['current_member'][3] || ($member['current_member'][1] && $member['party'] != 'Sinn Fein')) {
-			print '<li><a href="' . WEBPATH . 'alert/?only=1&amp;pid='.$member['person_id'].'"><strong>Email me whenever '. $member['full_name']. ' speaks</strong></a> (no more than once per day)</li>';
+            if (!isset($_SERVER['DEVICE_TYPE']) || $_SERVER['DEVICE_TYPE'] != "mobile") {
+			    print '<li><a href="' . WEBPATH . 'alert/?only=1&amp;pid='.$member['person_id'].'"><strong>Email me whenever '. $member['full_name']. ' speaks</strong></a> (no more than once per day)</li>';
+            }
 		}
 
 		?>
@@ -1226,9 +1591,6 @@ pr()//-->
 						
 						
 						<ul class="jumpers">
-<? if (!in_array(1, $member['houses']) || $member['party'] == 'Sinn Fein') { ?>
-						<li><a href="#hansard">Recent appearances</a></li>
-<? } ?>
 						<li><a href="#numbers">Numbers</a></li>
 <?php		if ($member['current_member'][1] || $member['current_member'][2] ) { ?>
 						<li><a href="#register">Register of Interests</a></li>
@@ -1547,7 +1909,9 @@ elseif ($member['house_disp']==3) print 'this MLA';
 elseif ($member['house_disp']==4) print 'this MSP';
 elseif ($member['house_disp']==0) print $member['full_name']; ?> speaks<?php
 			if ($member['current_member'][0] || $member['current_member'][2] || $member['current_member'][3] || ($member['current_member'][1] && $member['party'] != 'Sinn Fein')) {
-				print ' &mdash; <a href="' . WEBPATH . 'alert/?only=1&amp;pid='.$member['person_id'].'">email me whenever '. $member['full_name']. ' speaks</a>';
+			    if (!isset($_SERVER['DEVICE_TYPE']) || $_SERVER['DEVICE_TYPE'] != "mobile") {
+				    print ' &mdash; <a href="' . WEBPATH . 'alert/?only=1&amp;pid='.$member['person_id'].'">email me whenever '. $member['full_name']. ' speaks</a>';
+			    }
 			}
 			print '.</li>';
 		}
@@ -1743,6 +2107,9 @@ elseif ($member['house_disp']==0) print $member['full_name']; ?> speaks<?php
 		if (isset($links['guardian_election_results'])) {
 			$html .= '	<li><a href="' . $links['guardian_election_results'] . '">Election results for ' . $member->constituency() . '</a> <small>(From The Guardian)</small></li>';
 		}
+		if (isset($links['abc_election_results_2007'])) {
+			$html .= '	<li><a href="' . $links['abc_election_results_2007'] . '">Election results for ' . $member->constituency() . '</a> <small>(From ABC)</small></li>';
+		}
 
 		if (isset($links['guardian_candidacies'])) {
 			$html .= '	<li><a href="' . $links['guardian_candidacies'] . '">Previous candidacies</a> <small>(From The Guardian)</small></li>';
@@ -1809,6 +2176,33 @@ elseif ($member['house_disp']==0) print $member['full_name']; ?> speaks<?php
 	
 	}
 	
+	function error_message_mobile ($message, $fatal = false) {	
+		// If $fatal is true, we exit the page right here.
+		// $message is like the array used in $this->message()
+			
+		if (!$this->page_started()) {
+			$this->page_start_mobile();
+		}
+		
+		if (is_string($message)) {
+			// Sometimes we're just sending a single line to this function
+			// rather like the bigger array...
+			$message = array (
+				'text' => $message
+			);
+		}
+		
+		$this->message($message, 'error');
+			
+		if ($fatal) {
+			if ($this->within_stripe()) {
+				$this->stripe_end();
+			}
+			$this->page_end_mobile();
+		}
+	
+	}
+
 	
 	function message ($message, $class='') {
 		// Generates a very simple but common page content.
