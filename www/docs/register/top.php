@@ -1,6 +1,7 @@
 <?php include_once 'common.php'; ?>
-<html>
-<style>
+<?php $PAGE->page_start(); ?>
+
+<style type="text/css">
 	iframe {
 		height: 100%;
 		width: 49.5%;
@@ -9,18 +10,12 @@
 		border: 1px solid black;
 	}
 </style>
-<body>
 
-<form>
-<div id="header">
-	<h2>Register of interests for <?php echo $_GET['who'] ?></h2>
-</div>
-
+<a name="frames">
 <iframe id="images" src="images.php?who=<?php echo $_GET['who'] ?>">
 </iframe>
 
 <iframe id="transcription" src="register.php?who=<?php echo $_GET['who'] ?>">
 </iframe>
 
-</body>
-</html>
+<?php $PAGE->page_end(); ?>

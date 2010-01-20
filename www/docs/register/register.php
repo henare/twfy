@@ -180,8 +180,15 @@ class Register {
 <head>
  	<title>Register of Interests Transcriber</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<style>
+	<style type="text/css">
+@import url(/style/default/global_non_ns4.css);
+
+body {
+	min-width: 0;
+}
+
 table {
+	border: 1px solid black;
 	width: 100%;
 }
 
@@ -190,7 +197,6 @@ input {
 }
 
 td {
-	border: 1px solid blue;
 	text-align: center;
 }
 
