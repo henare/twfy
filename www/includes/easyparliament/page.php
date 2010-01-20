@@ -1204,7 +1204,7 @@ pageTracker._trackPageview();
 		*/
 		$links[] = '<a href="http://www.openaustralia.org/about/">About us</a>';
 		$links[] = '<a href="http://www.openaustralia.org/help/linktous/">Link to us</a>';
-                $links[] = '<a href="http://www.openaustralia.org/houserules/">House rules</a>';
+		$links[] = '<a href="http://www.openaustralia.org/houserules/">House rules</a>';
 		$links[] = '<a href="http://www.openaustralia.org/api/">API</a> / <a href="http://data.openaustralia.org">XML</a>';
 		$links[] = '<a href="http://software.openaustralia.org">Source code</a>';
 		$links[] = '<a href="http://blog.openaustralia.org">Blog</a>';
