@@ -6,6 +6,8 @@ www/docs/senate/senate.rss
 www/docs/sitemap.xml
 www/docs/sitemaps/*
 www/docs/regmem/scan/*.pdf
+www/docs/regmem/*.pdf
+www/docs/register/interests
 scripts/morningupdate-lockfile
 scripts/run-with-lockfile
 scripts/rssgenerate-lockfile

@@ -1,0 +1,6 @@
+You need a copy of interests.tar.gz put extracted to create the interests folder.
+http://www.mithis.com/~tim/interests.tar.gz
+
+All the registery.xml files must be writable by the www server. 
+
+No conflict detection or other fancy stuff, last person to click the save button wins.
