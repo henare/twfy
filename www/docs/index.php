@@ -8,10 +8,6 @@ include_once "../includes/easyparliament/member.php";
 $PAGE->page_start();
 
 $PAGE->stripe_start();
-$message = $PAGE->recess_message();
-if ($message != '') {
-	print '<p id="warning">' . $message . '</p>';
-}
 
 ///////////////////////////////////////////////////////////////////////////
 //  SEARCH AND RECENT HANSARD
