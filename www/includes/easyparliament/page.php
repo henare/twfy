@@ -576,7 +576,7 @@ pageTracker._trackPageview();
 		// Links in the top menu, and the sublinks we see if
 		// we're within that section.
 		$items = array (
-			'home' 		=> array (),
+			'home' 		=> array ()/*,
 			'sitenews'  => array(),
 			'hansard' => array(),
 			'comments_recent' => array(),
@@ -585,8 +585,8 @@ pageTracker._trackPageview();
 #			'mlas'          => array (),
 #			'msps'          => array (),
 #			'help_us_out'	=> array (), 
-/*			'help_us_out'	=> array ('glossary_addterm'),  */
-			'help'		=> array ()
+#			'help_us_out'	=> array ('glossary_addterm'),
+			'help'		=> array ()*/
 		);
 		
 		// If the user's postcode is set, then we allow them to view the
@@ -1204,7 +1204,7 @@ pageTracker._trackPageview();
 		*/
 		$links[] = '<a href="http://www.openaustralia.org/about/">About us</a>';
 		$links[] = '<a href="http://www.openaustralia.org/help/linktous/">Link to us</a>';
-		$links[] = '<a href="http://www.openaustralia.org/houserules/">House rules</a>';
+                $links[] = '<a href="http://www.openaustralia.org/houserules/">House rules</a>';
 		$links[] = '<a href="http://www.openaustralia.org/api/">API</a> / <a href="http://data.openaustralia.org">XML</a>';
 		$links[] = '<a href="http://software.openaustralia.org">Source code</a>';
 		$links[] = '<a href="http://blog.openaustralia.org">Blog</a>';
