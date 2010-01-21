@@ -954,7 +954,7 @@ function display_user ($user_id="") {
 		if ($this_page == 'userviewself' && !$edited) {
 			$EDITURL = new URL('useredit');
 			?>
-				<p><strong>This is how other people see you.</strong> <a href="<?php echo $EDITURL->generate(); ?>">Edit your details</a>.</p>
+				<p><strong>This is how other people see you.</strong> <a href="http://www.openaustralia.org<?php echo $EDITURL->generate(); ?>">Edit your details</a>.</p>
 <?php	
 		}
 
