@@ -1,0 +1,36 @@
+# Apache configuration for OpenAustralia.
+# 
+# Copyright (c) 2008 UK Citizens Online Democracy. All rights reserved.
+# Email: matthew@mysociety.org; WWW: http://www.mysociety.org
+# 
+# $Id: httpd.conf,v 1.5 2008/01/25 18:03:42 twfy-staging Exp $
+
+<VirtualHost *:80>
+ServerName labs.openaustralia.org
+DocumentRoot /srv/labs.openaustralia.org/twfy/www/docs/
+
+DirectoryIndex index.php
+
+ErrorDocument 404 /404.php
+
+RewriteEngine on
+
+# Links in emails
+RewriteRule ^/A/(.*)$     http://www.openaustralia.org/A/$1 [R=permanent]
+RewriteRule ^/D/(.*)$     http://www.openaustralia.org/D/$1 [R=permanent]
+RewriteRule ^/U/(.*)$     http://www.openaustralia.org/U/$1 [R=permanent]
+
+# API
+RewriteRule ^/api/(.*)$         http://www.openaustralia.org/api/$1 [R=permanent]
+
+# Other people types
+RewriteRule ^/news/(.*)$        http://www.openaustralia.org/news/$1 [R=permanent]
+RewriteRule ^/hansard/(.*)$     http://www.openaustralia.org/hansard/$1 [R=permanent]
+RewriteRule ^/comments/(.*)$    http://www.openaustralia.org/comments/$1 [R=permanent]
+RewriteRule ^/mps/(.*)$         http://www.openaustralia.org/mps/$1 [R=permanent]
+RewriteRule ^/senators/(.*)$    http://www.openaustralia.org/senators/$1 [R=permanent]
+RewriteRule ^/help/(.*)$        http://www.openaustralia.org/help/$1 [R=permanent]
+
+#RewriteRule ^/user/?pg=edit$     http://www.openaustralia.org/user/?pg=edit [R=permanent]
+
+</VirtualHost>
