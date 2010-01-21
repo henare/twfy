@@ -19,7 +19,7 @@ $PAGE->block_start(array ('id'=>'intro', 'title'=>'At OpenAustralia.org Labs you
 
 <div>
 <h2>
-	<a href="/register/">Register of Member's Interests Transcriber</a>
+	<a href="/regmem/transcriber">Register of Member's Interests Transcriber</a>
 </h2>
 <img src="/images/register-rounded.png">
 
@@ -30,8 +30,9 @@ value, and memberships of Clubs and Associations.
 </p><p>
 While we now have the register online, the current format is searchable or
 comparable. This lab provides a tool to transcribe the results from the hand
-written forms into a searchable digital format. <a href="/register/"><b>Why not
-help out with the transcription, it's really easy!</b></a>
+written forms into a searchable digital format. 
+<a href="/regmem/transcriber"><b>Why not help out with the transcription, it's
+really easy!</b></a>
 </p>
 </div>
 
