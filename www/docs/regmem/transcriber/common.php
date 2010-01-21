@@ -1,7 +1,7 @@
 <?php
 $this_page = "register";
 
-include_once "../../includes/easyparliament/init.php";
+include_once "../../../includes/easyparliament/init.php";
 
 if (!$THEUSER->email()) {
 	header( 'Location: http://'.DOMAIN.'/user/login/?ret='.urlencode($_SERVER['REQUEST_URI']));
