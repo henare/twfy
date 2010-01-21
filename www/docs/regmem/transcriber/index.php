@@ -18,15 +18,19 @@ $PAGE->block_start(array(
 <?php
 $people = array();
 
-$d1 = opendir('interests');
-while (($outerdir = readdir($d1)) !== false) {
-	$d2 = opendir("interests/$outerdir");
+if (file_exists('interests')) {
+	$d1 = opendir('interests');
+	while (($outerdir = readdir($d1)) !== false) {
+		$d2 = opendir("interests/$outerdir");
 
-	while (($innerdir = readdir($d2)) !== false) {
-		if (file_exists("interests/$outerdir/$innerdir/register.xml")) {
-			$people[] = "$outerdir/$innerdir";
+		while (($innerdir = readdir($d2)) !== false) {
+			if (file_exists("interests/$outerdir/$innerdir/register.xml")) {
+				$people[] = "$outerdir/$innerdir";
+			}
 		}
 	}
+} else {
+	echo 'Error: Unable to find the members interests repository.';
 }
 
 sort($people);
