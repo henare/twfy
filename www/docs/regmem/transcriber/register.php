@@ -267,15 +267,25 @@ function noSubmit(event) {
 	}
 
 	try {
+		$command = false;
 		if (isset($_POST['save'])) {
+			// Try to grab a lock
+			$lock = @fopen("interests/lock", 'w+');
+			if ($lock !== false) {
+				// Wait till we can grab an exclusive lock. Shouldn't be too long.
+				while (!flock($lock, LOCK_EX))
+					sleep(0.1);
+				$command = 'save';
+			} else {
+				echo "<div>Unable to save changes (could not grab lock file)</div>\n";
+			}
+		}
+
+
+		if ($command == 'save') {
 			// Process the data from the form.
 			$register = Register::from_post($_POST);
 			
-			// Grab a lock
-			$lock = fopen("interests/lock", 'w+');
-			while (!flock($lock, LOCK_EX))
-				sleep(0.1);
-
 			// Write out the file
 			$f = fopen($who, "w"); 
 			fwrite($f, $register->toXML());
@@ -294,7 +304,6 @@ function noSubmit(event) {
 			chdir("interests");
 	
 			// Do the git commit
-
 			$safe_file = escapeshellarg($file);
 			$safe_message = escapeshellarg("Update $who");
 			$safe_author = escapeshellarg($author);
