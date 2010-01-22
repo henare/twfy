@@ -46,15 +46,16 @@ if (file_exists('interests')) {
 
 sort($people);
 
-
 foreach($people as $fullname) {
 
 	$parts = explode('/', $fullname);
 	$realname =  str_replace('_', ' ', $parts[1]);
 
-/*	$person = new MEMBER(array('name'=> $realname));
+/*      // Show a table which gives more information about the member of parliment
+	$person = new MEMBER(array('name'=> $realname));
 	if (!$person->valid())
-		continue;*/
+		continue;
+*/
 
 ?>
 	<li><a href="top.php?who=<?php echo $fullname ?>#frames"><?php echo $realname ?></a></li>
