@@ -19,10 +19,21 @@ $PAGE->block_start(array(
 $people = array();
 
 if (file_exists('interests')) {
+	// Search the interests directory for a person. The format looks like 
+	// ./interests/(members|senators)/(?name)/(?files)
 	$d1 = opendir('interests');
-	while (($outerdir = readdir($d1)) !== false) {
-		$d2 = opendir("interests/$outerdir");
 
+	// Loop over the members/senators/etc directories
+	while (($outerdir = readdir($d1)) !== false) {
+
+		$d2 = "interests/$outerdir";
+
+		// Make sure it's a directory, IE not the lock file.
+		if (! is_dir($d2))
+			continue;
+
+		// Loop over person names
+		$d2 = opendir($d2);
 		while (($innerdir = readdir($d2)) !== false) {
 			if (file_exists("interests/$outerdir/$innerdir/register.xml")) {
 				$people[] = "$outerdir/$innerdir";
