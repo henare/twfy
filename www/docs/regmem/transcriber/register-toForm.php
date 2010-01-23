@@ -1,7 +1,7 @@
 <form method="post" action="?who=<?php echo $_GET['who'] ?>">
 
-<h1>Register of Members' Interests</h1>
-<h2>Statement of Registrable Interests</h2>
+<h2>Register of Members' Interests</h2>
+<h3>Statement of Registrable Interests</h3>
 
 <input type="submit" name="save" value="save">  
 
