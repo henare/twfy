@@ -2,6 +2,10 @@
 <?php $PAGE->page_start(); ?>
 
 <style type="text/css">
+	body, html, div#container, div#content {
+		height: 100%;
+	}
+
 	iframe {
 		height: 100%;
 		width: 49.5%;

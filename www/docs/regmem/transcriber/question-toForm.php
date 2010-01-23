@@ -31,6 +31,7 @@ foreach($this->persons as $person => $person_desc) { ?>
 <?php		}
 	}
 ?>
+					<td></td>
 				</tr><tr>
 
 <?php
@@ -50,6 +51,9 @@ foreach($this->persons as $person => $person_desc) { ?>
 						value="<?php echo htmlentities(@$row[$field_name]); ?>">
 					</td>
 <?php			} ?>
+					<td class="add">
+						<img src="add.png" onMouseDown="addRow(this.parentNode.parentNode);">
+					</td>
 <?php 		} ?>
 				</tr>
 			</table>
