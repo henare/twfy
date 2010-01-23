@@ -200,9 +200,23 @@ td {
 	text-align: center;
 }
 
+td.number-single {
+	width: 1em;
+	text-align: right;
+}
+
+td.number-multi {
+	width: 6em;
+	text-align: right;
+}
+
 textarea {
 	width: 100%;
 	height: 500px;
+}
+
+h3, h4 {
+	margin: 0;
 }
 
 	</style>
