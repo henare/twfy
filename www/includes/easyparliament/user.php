@@ -833,9 +833,11 @@ class THEUSER extends USER {
 		if ($this->isloggedin()) {
 			// Set last_visit to now.
 			$date_now = gmdate("Y-m-d H:i:s");
+/* LABS: Updating disabled because we only have read-only access to the DB.
 			$q = $this->db->query("UPDATE users 
 							SET 	lastvisit = '$date_now'
 							WHERE 	user_id = '" . $this->user_id() . "'");	
+*/
 	
 			$this->lastvisit = $date_now;
 		}

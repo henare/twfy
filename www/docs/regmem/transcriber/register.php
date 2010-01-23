@@ -183,6 +183,10 @@ class Register {
 	<style type="text/css">
 @import url(/style/default/global_non_ns4.css);
 
+html, body {
+	height: 100%;
+}
+
 body {
 	min-width: 0;
 }
@@ -200,9 +204,27 @@ td {
 	text-align: center;
 }
 
+td.number-single {
+	width: 1em;
+	text-align: right;
+}
+
+td.number-multi {
+	width: 6em;
+	text-align: right;
+}
+
 textarea {
 	width: 100%;
 	height: 500px;
+}
+
+h3, h4 {
+	margin: 0;
+}
+
+td.add {
+	width: 16px;
 }
 
 	</style>
@@ -222,33 +244,38 @@ function inputs(row) {
 
 function addRowOnEnter(event, row) {
 	if (event && event.keyCode == 13) {
-		var table = row.parentNode;
-
-		var tablerows = rows(table);
-		var lastnode = tablerows[tablerows.length-1];
-
-		var newnode = lastnode.cloneNode(true);
-	
-		// Get the index of the old value	
-		var i = parseInt(cells(lastnode)[0].textContent)+1;
-
-		cells(newnode)[0].innerHTML = i+".";
-
-		var input = inputs(lastnode);
-		input[input.length-1].onkeyup = null;
-
-		lastnode.parentNode.appendChild(newnode);
-
-		var newinputs = inputs(rows(table)[tablerows.length-1]);
+		var newinputs = addRow(row);
 		newinputs[0].focus();
-		for(var j = 0; j < newinputs.length; j++) {
-			newinputs[j].value = "";
-			newinputs[j].name = newinputs[j].name.replace('['+(i-2)+']','['+(i-1)+']');
-			newinputs[j].innerHtml = "";
-		}
 		return false;
 	}
 	return true;
+}
+
+function addRow(row) {
+	var table = row.parentNode;
+
+	var tablerows = rows(table);
+	var lastnode = tablerows[tablerows.length-1];
+
+	var newnode = lastnode.cloneNode(true);
+
+	// Get the index of the old value	
+	var i = parseInt(cells(lastnode)[0].textContent)+1;
+
+	cells(newnode)[0].innerHTML = i+".";
+
+	var input = inputs(lastnode);
+	input[input.length-1].onkeyup = null;
+
+	lastnode.parentNode.appendChild(newnode);
+
+	var newinputs = inputs(rows(table)[tablerows.length-1]);
+	for(var j = 0; j < newinputs.length; j++) {
+		newinputs[j].value = "";
+		newinputs[j].name = newinputs[j].name.replace('['+(i-2)+']','['+(i-1)+']');
+		newinputs[j].innerHtml = "";
+	}
+	return newinputs;
 }
 
 function noSubmit(event) {
@@ -267,15 +294,25 @@ function noSubmit(event) {
 	}
 
 	try {
+		$command = false;
 		if (isset($_POST['save'])) {
+			// Try to grab a lock
+			$lock = @fopen("interests/lock", 'w+');
+			if ($lock !== false) {
+				// Wait till we can grab an exclusive lock. Shouldn't be too long.
+				while (!flock($lock, LOCK_EX))
+					sleep(0.1);
+				$command = 'save';
+			} else {
+				echo "<div>Unable to save changes (could not grab lock file)</div>\n";
+			}
+		}
+
+
+		if ($command == 'save') {
 			// Process the data from the form.
 			$register = Register::from_post($_POST);
 			
-			// Grab a lock
-			$lock = fopen("interests/lock", 'w+');
-			while (!flock($lock, LOCK_EX))
-				sleep(0.1);
-
 			// Write out the file
 			$f = fopen($who, "w"); 
 			fwrite($f, $register->toXML());
@@ -294,7 +331,6 @@ function noSubmit(event) {
 			chdir("interests");
 	
 			// Do the git commit
-
 			$safe_file = escapeshellarg($file);
 			$safe_message = escapeshellarg("Update $who");
 			$safe_author = escapeshellarg($author);
