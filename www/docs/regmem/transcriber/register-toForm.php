@@ -15,7 +15,7 @@
 
 <table>
 	<tr>
-		<td>Signed Date</td>
+		<td>Stamped Date</td>
 		<td><input type="text" name="stamped_date" value="<?php echo $this->stamped_date; ?>"
 			onKeyPress="return noSubmit(event)"></td>
 	</tr><tr>
