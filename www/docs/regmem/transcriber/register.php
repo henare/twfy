@@ -183,6 +183,10 @@ class Register {
 	<style type="text/css">
 @import url(/style/default/global_non_ns4.css);
 
+html, body {
+	height: 100%;
+}
+
 body {
 	min-width: 0;
 }
