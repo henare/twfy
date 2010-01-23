@@ -36,6 +36,20 @@ really easy!</b></a>
 </p>
 </div>
 
+<h2>
+        <a href="/words-in-parliament/">Words in Parliament</a>
+</h2>
+<a href="/words-in-parliament/"><img src="/images/words-in-parliament.png"></a>
+
+<p>
+Words in Parliament is an experiment created by Stephen Bartlett at our
+Melbourne hackfest. It displays the most commonly used words in the most recent
+house debate.
+</p>
+<p>
+The code for this experiment is available on
+<a href="http://github.com/srbartlett/words-in-parliament/">Github</a>.
+</div>
 
 <?php
 $PAGE->block_end();
