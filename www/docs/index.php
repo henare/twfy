@@ -19,9 +19,9 @@ $PAGE->block_start(array ('id'=>'intro', 'title'=>'At OpenAustralia.org Labs you
 
 <div>
 <h2>
-	<a href="/regmem/transcriber">Register of Member's Interests Transcriber
+	<a href="/regmem/transcriber">Register of Member's Interests Transcriber</a>
 </h2>
-<img src="/images/register-rounded.png"></a>
+<a href="/regmem/transcriber"><img src="/images/register-rounded.png" alt="Transcriber screenshot"></a>
 
 <p>
 In the Register of Interests, Representatives and Senators declare information
