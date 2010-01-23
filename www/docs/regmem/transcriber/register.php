@@ -219,6 +219,10 @@ h3, h4 {
 	margin: 0;
 }
 
+td.add {
+	width: 16px;
+}
+
 	</style>
 	<script type="text/javascript">
 
@@ -236,33 +240,38 @@ function inputs(row) {
 
 function addRowOnEnter(event, row) {
 	if (event && event.keyCode == 13) {
-		var table = row.parentNode;
-
-		var tablerows = rows(table);
-		var lastnode = tablerows[tablerows.length-1];
-
-		var newnode = lastnode.cloneNode(true);
-	
-		// Get the index of the old value	
-		var i = parseInt(cells(lastnode)[0].textContent)+1;
-
-		cells(newnode)[0].innerHTML = i+".";
-
-		var input = inputs(lastnode);
-		input[input.length-1].onkeyup = null;
-
-		lastnode.parentNode.appendChild(newnode);
-
-		var newinputs = inputs(rows(table)[tablerows.length-1]);
+		var newinputs = addRow(row);
 		newinputs[0].focus();
-		for(var j = 0; j < newinputs.length; j++) {
-			newinputs[j].value = "";
-			newinputs[j].name = newinputs[j].name.replace('['+(i-2)+']','['+(i-1)+']');
-			newinputs[j].innerHtml = "";
-		}
 		return false;
 	}
 	return true;
+}
+
+function addRow(row) {
+	var table = row.parentNode;
+
+	var tablerows = rows(table);
+	var lastnode = tablerows[tablerows.length-1];
+
+	var newnode = lastnode.cloneNode(true);
+
+	// Get the index of the old value	
+	var i = parseInt(cells(lastnode)[0].textContent)+1;
+
+	cells(newnode)[0].innerHTML = i+".";
+
+	var input = inputs(lastnode);
+	input[input.length-1].onkeyup = null;
+
+	lastnode.parentNode.appendChild(newnode);
+
+	var newinputs = inputs(rows(table)[tablerows.length-1]);
+	for(var j = 0; j < newinputs.length; j++) {
+		newinputs[j].value = "";
+		newinputs[j].name = newinputs[j].name.replace('['+(i-2)+']','['+(i-1)+']');
+		newinputs[j].innerHtml = "";
+	}
+	return newinputs;
 }
 
 function noSubmit(event) {
