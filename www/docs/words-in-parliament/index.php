@@ -17,6 +17,12 @@ $PAGE->page_start();
 		padding: 0;
 		margin: 0;
 		border: 1px solid black;
+
+		/* Make the border included in size. */
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		box-sizing: border-box;
 	}
 </style>
 
