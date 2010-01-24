@@ -52,8 +52,11 @@ foreach($this->persons as $person => $person_desc) { ?>
 						value="<?php echo htmlentities(@$row[$field_name]); ?>">
 					</td>
 <?php			} ?>
-					<td class="add">
+					<td class="icon">
 						<img src="add.png" onMouseDown="addRow(this, <?php echo $i ?>);">
+					</td>
+					<td class="icon">
+						<img src="minus.png" onMouseDown="removeRow(this, <?php echo $i ?>);">
 					</td>
 <?php 		} ?>
 				</tr>

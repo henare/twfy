@@ -223,7 +223,7 @@ h3, h4 {
 	margin: 0;
 }
 
-td.add {
+td.icon {
 	width: 16px;
 }
 
@@ -242,20 +242,17 @@ function inputs(row) {
 	return row.getElementsByTagName('input');
 }
 
-function setNumber(row, i) {
-	console.log('setNumber');
-	console.log(row);
-	console.log(i);
+function imgs(row) {
+	return row.getElementsByTagName('img');
+}
 
+function setNumber(row, i) {
 	var tablecells = cells(row);
-	console.log('tablecells');
-	console.log(tablecells);
+	var tableimgs = imgs(row);
+
 	tablecells[0].textContent = ''+i+'.';
 
 	var newinputs = inputs(row);
-
-	console.log('newinputs');
-	console.log(newinputs[0].name);
 
 	for (var j = 0; j < newinputs.length; j++) {
 		var name = newinputs[j].name;
@@ -267,6 +264,14 @@ function setNumber(row, i) {
 			return addRowOnEnter(event, this, i-1);
 		};
 	}
+
+	tableimgs[0].onmousedown = function() {
+		return addRow(this, i-1);
+	}
+	tableimgs[1].onmousedown = function() {
+		return removeRow(this, i-1);
+	}
+
 	return newinputs;	
 }
 
@@ -317,6 +322,28 @@ function noSubmit(event) {
 	return (event && event.keyCode != 13);
 }
 
+function removeRow(cell, removeat) {
+	var row = cell.parentNode.parentNode;
+	var table = row.parentNode;
+
+	var tablerows = rows(table);
+
+	var offset = 0;
+	while (tablerows[offset].className == 'skip') 
+		offset += 1;
+
+	var currentrow = tablerows[removeat+offset];
+
+// Remove the new row
+	table.removeChild(currentrow);
+
+// Renumber the subsuquent rows
+	var i = removeat+offset;
+	while ( i < tablerows.length ) {
+		setNumber(tablerows[i], i-offset+1);
+		i += 1;
+	}
+}
 	</script>
 </head>
 <body>
