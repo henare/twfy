@@ -3,7 +3,7 @@
 <table>
 	<tr>
 		<td><h2><?php echo $this->name ?></h2></td>
-		<td><?php echo $this->description ?></h2></td>
+		<td><?php echo $this->description ?></td>
 	</tr>
 <?php 
 $fields = count($this->fields);
