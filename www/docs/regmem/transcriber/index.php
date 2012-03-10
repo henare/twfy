@@ -14,6 +14,9 @@ $PAGE->block_start(array(
 
 ?>
 <ul>
+	<li><a href="#member">Members of the House of Representatives</a></li>
+	<li><a href="#senator">Senators</a></li>
+
 
 <?php
 $people = array();
@@ -46,9 +49,30 @@ if (file_exists('interests')) {
 
 sort($people);
 
+$listof = '';
 foreach($people as $fullname) {
 
 	$parts = explode('/', $fullname);
+
+	if ($listof != $parts[0]) {
+		$listof = $parts[0];
+
+		if ($listof == "member") {
+			$name = "Members of the House of Representatives";
+		} else {
+			$name = "Senators";
+		}
+
+		echo "</ul>\n";
+		echo "<br>\n";
+		echo "<br>\n";
+		echo "<a name='$listof'></a>\n";
+		echo "<h2>$name</h2>\n";
+		echo "<br>\n";
+		echo "<ul>\n";
+
+	}
+
 	$realname =  str_replace('_', ' ', $parts[1]);
 
 /*      // Show a table which gives more information about the member of parliment

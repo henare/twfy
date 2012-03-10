@@ -223,7 +223,7 @@ h3, h4 {
 	margin: 0;
 }
 
-td.add {
+td.icon {
 	width: 16px;
 }
 
@@ -242,46 +242,108 @@ function inputs(row) {
 	return row.getElementsByTagName('input');
 }
 
-function addRowOnEnter(event, row) {
+function imgs(row) {
+	return row.getElementsByTagName('img');
+}
+
+function setNumber(row, i) {
+	var tablecells = cells(row);
+	var tableimgs = imgs(row);
+
+	tablecells[0].textContent = ''+i+'.';
+
+	var newinputs = inputs(row);
+
+	for (var j = 0; j < newinputs.length; j++) {
+		var name = newinputs[j].name;
+		var parts = name.split('[');
+		parts[3] = (i-1)+"]";
+		newinputs[j].name = parts.join('[');
+
+		newinputs[j].onkeypress=function() {
+			return addRowOnEnter(event, this, i-1);
+		};
+	}
+
+	tableimgs[0].onmousedown = function() {
+		return addRow(this, i-1);
+	}
+	tableimgs[1].onmousedown = function() {
+		return removeRow(this, i-1);
+	}
+
+	return newinputs;	
+}
+
+function addRow(cell, insertafter) {
+	var row = cell.parentNode.parentNode;
+	var table = row.parentNode;
+
+	var tablerows = rows(table);
+
+	var offset = 0;
+	while (tablerows[offset].className == 'skip') 
+		offset += 1;
+
+	var currentrow = tablerows[insertafter+offset];
+
+// Insert the new row
+	var newrow = currentrow.cloneNode(true);
+
+	table.insertBefore(newrow, currentrow.nextSibling);
+
+	// Clear the input values
+	var newinput = inputs(newrow);
+	for (var j = 0; j < newinput.length; j++)
+		newinput[j].value = "";
+
+	setNumber(newrow, insertafter+offset);
+
+// Renumber the subsuquent rows
+	var i = insertafter+offset;
+	while ( i < tablerows.length ) {
+		setNumber(tablerows[i], i-offset+1);
+		i += 1;
+	}
+
+	return inputs(newrow);
+}
+
+function addRowOnEnter(event, table, insertafter) {
 	if (event && event.keyCode == 13) {
-		var newinputs = addRow(row);
+		var newinputs = addRow(table, insertafter);
 		newinputs[0].focus();
 		return false;
 	}
 	return true;
 }
 
-function addRow(row) {
-	var table = row.parentNode;
-
-	var tablerows = rows(table);
-	var lastnode = tablerows[tablerows.length-1];
-
-	var newnode = lastnode.cloneNode(true);
-
-	// Get the index of the old value	
-	var i = parseInt(cells(lastnode)[0].textContent)+1;
-
-	cells(newnode)[0].innerHTML = i+".";
-
-	var input = inputs(lastnode);
-	input[input.length-1].onkeyup = null;
-
-	lastnode.parentNode.appendChild(newnode);
-
-	var newinputs = inputs(rows(table)[tablerows.length-1]);
-	for(var j = 0; j < newinputs.length; j++) {
-		newinputs[j].value = "";
-		newinputs[j].name = newinputs[j].name.replace('['+(i-2)+']','['+(i-1)+']');
-		newinputs[j].innerHtml = "";
-	}
-	return newinputs;
-}
-
 function noSubmit(event) {
 	return (event && event.keyCode != 13);
 }
 
+function removeRow(cell, removeat) {
+	var row = cell.parentNode.parentNode;
+	var table = row.parentNode;
+
+	var tablerows = rows(table);
+
+	var offset = 0;
+	while (tablerows[offset].className == 'skip') 
+		offset += 1;
+
+	var currentrow = tablerows[removeat+offset];
+
+// Remove the new row
+	table.removeChild(currentrow);
+
+// Renumber the subsuquent rows
+	var i = removeat+offset;
+	while ( i < tablerows.length ) {
+		setNumber(tablerows[i], i-offset+1);
+		i += 1;
+	}
+}
 	</script>
 </head>
 <body>
